@@ -1,0 +1,471 @@
+<html>
+ <head>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ <script src="/_sdk/telemetry_sdk.js"></script></head>
+ <body>
+  <div id="tiendita-escolar-juego">
+   <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .tiendita-wrapper {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        font-family: 'Arial', 'Segoe UI', sans-serif;
+        border-radius: 20px;
+      }
+
+      .tiendita-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .tiendita-header h2 {
+        font-size: 32px;
+        color: #1f2937;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      .tiendita-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .producto-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        max-width: 500px;
+        width: 100%;
+      }
+
+      .producto-emoji {
+        font-size: 80px;
+        margin-bottom: 20px;
+        animation: bounce 0.6s infinite;
+      }
+
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+
+      .producto-nombre {
+        font-size: 28px;
+        color: #1f2937;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .producto-precio {
+        font-size: 36px;
+        color: #10b981;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+
+      .dinero-seleccionado {
+        background: #eff6ff;
+        border: 3px solid #3b82f6;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .dinero-seleccionado p {
+        font-size: 14px;
+        color: #1e40af;
+        margin-bottom: 10px;
+      }
+
+      .cantidad-total {
+        font-size: 32px;
+        color: #10b981;
+        font-weight: bold;
+      }
+
+      .monedas-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+        max-width: 500px;
+        width: 100%;
+      }
+
+      .moneda-btn {
+        background: white;
+        border: 3px solid #f97316;
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #1f2937;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .moneda-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+        background: #fff7ed;
+      }
+
+      .moneda-btn:active {
+        transform: scale(0.95);
+      }
+
+      .moneda-valor {
+        font-size: 14px;
+        margin-top: 3px;
+      }
+
+      .botones-accion {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .btn-pagar, .btn-limpiar, .btn-siguiente {
+        padding: 15px 40px;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .btn-pagar {
+        background: #10b981;
+        color: white;
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .btn-pagar:hover {
+        background: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+      }
+
+      .btn-pagar:disabled {
+        background: #d1d5db;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .btn-limpiar {
+        background: #ef4444;
+        color: white;
+        flex: 1;
+        min-width: 150px;
+      }
+
+      .btn-limpiar:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+      }
+
+      .btn-siguiente {
+        background: #3b82f6;
+        color: white;
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .btn-siguiente:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+      }
+
+      .mensaje {
+        font-size: 22px;
+        font-weight: bold;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+        animation: slideIn 0.4s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .mensaje.exito {
+        background: #dcfce7;
+        color: #166534;
+        border: 3px solid #10b981;
+      }
+
+      .mensaje.error {
+        background: #fee2e2;
+        color: #7f1d1d;
+        border: 3px solid #ef4444;
+      }
+
+      .mensaje.info {
+        background: #dbeafe;
+        color: #1e40af;
+        border: 3px solid #3b82f6;
+      }
+
+      .btn-volver {
+        background: #6b7280;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        align-self: flex-start;
+      }
+
+      .btn-volver:hover {
+        background: #4b5563;
+        transform: translateX(-3px);
+      }
+
+      .timer {
+        font-size: 20px;
+        color: #7f1d1d;
+        font-weight: bold;
+        margin-bottom: 15px;
+      }
+
+      .productos-lista {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .productos-lista p {
+        margin: 10px 0;
+        font-size: 16px;
+        color: #1f2937;
+      }
+
+      @media (max-width: 600px) {
+        .tiendita-wrapper {
+          padding: 15px;
+        }
+
+        .tiendita-header h2 {
+          font-size: 24px;
+        }
+
+        .producto-card {
+          padding: 25px;
+        }
+
+        .producto-emoji {
+          font-size: 60px;
+        }
+
+        .producto-nombre {
+          font-size: 22px;
+        }
+
+        .producto-precio {
+          font-size: 28px;
+        }
+
+        .monedas-container {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+        }
+
+        .moneda-btn {
+          width: 70px;
+          height: 70px;
+          font-size: 20px;
+        }
+
+        .btn-pagar, .btn-limpiar, .btn-siguiente {
+          padding: 12px 20px;
+          font-size: 16px;
+          min-width: auto;
+        }
+      }
+    </style>
+   <div class="tiendita-wrapper">
+    <div class="tiendita-header">
+     <h2>🏪 Tiendita Escolar</h2>
+    </div>
+    <div class="tiendita-content">
+     <div id="juego-container"></div>
+    </div><button class="btn-volver" onclick="tiendita_volverAlMenu()">← Volver al Menú</button>
+   </div>
+   <script>
+      // 🎮 DATOS DEL JUEGO
+      const PRODUCTOS = [
+        { nombre: 'Manzana', emoji: '🍎', precio: 5 },
+        { nombre: 'Refresco', emoji: '🥤', precio: 10 },
+        { nombre: 'Dona', emoji: '🍩', precio: 7 },
+        { nombre: 'Galletas', emoji: '🍪', precio: 8 },
+        { nombre: 'Chocolate', emoji: '🍫', precio: 12 },
+        { nombre: 'Plátano', emoji: '🍌', precio: 6 },
+        { nombre: 'Sandia', emoji: '🍉', precio: 15 },
+        { nombre: 'Paleta', emoji: '🍭', precio: 4 }
+      ];
+
+      const MONEDAS = [1, 2, 5, 10, 20];
+
+      let estadoJuego = {
+        productoActual: null,
+        dineroSeleccionado: 0,
+        monedasSeleccionadas: [],
+        tiempoRestante: 60,
+        timerInterval: null,
+        mensaje: ''
+      };
+
+      // 🎯 FUNCIONES PRINCIPALES
+      function iniciarJuego() {
+        generarProducto();
+        renderizarJuego();
+      }
+
+      function generarProducto() {
+        estadoJuego.productoActual = PRODUCTOS[Math.floor(Math.random() * PRODUCTOS.length)];
+        estadoJuego.dineroSeleccionado = 0;
+        estadoJuego.monedasSeleccionadas = [];
+        estadoJuego.mensaje = '';
+      }
+
+      function agregarMoneda(valor) {
+        estadoJuego.monedasSeleccionadas.push(valor);
+        estadoJuego.dineroSeleccionado += valor;
+        renderizarJuego();
+      }
+
+      function limpiarDinero() {
+        estadoJuego.dineroSeleccionado = 0;
+        estadoJuego.monedasSeleccionadas = [];
+        estadoJuego.mensaje = '';
+        renderizarJuego();
+      }
+
+      function verificarPago() {
+        const precio = estadoJuego.productoActual.precio;
+
+        if (estadoJuego.dineroSeleccionado < precio) {
+          estadoJuego.mensaje = `❌ ¡No es suficiente! Faltan $${precio - estadoJuego.dineroSeleccionado}`;
+        } else if (estadoJuego.dineroSeleccionado === precio) {
+          estadoJuego.mensaje = `✅ ¡Correcto! ¡Excelente matemático!`;
+          setTimeout(() => {
+            generarProducto();
+            renderizarJuego();
+          }, 2000);
+        } else {
+          const cambio = estadoJuego.dineroSeleccionado - precio;
+          estadoJuego.mensaje = `✅ ¡Correcto! El cambio es $${cambio}`;
+          setTimeout(() => {
+            generarProducto();
+            renderizarJuego();
+          }, 2000);
+        }
+        renderizarJuego();
+      }
+
+      function renderizarJuego() {
+        const container = document.getElementById('juego-container');
+        const producto = estadoJuego.productoActual;
+        const tipoMensaje = estadoJuego.mensaje.includes('❌') ? 'error' : estadoJuego.mensaje.includes('✅') ? 'exito' : 'info';
+
+        let html = `
+          <div class="producto-card">
+            <div class="producto-emoji">${producto.emoji}</div>
+            <div class="producto-nombre">${producto.nombre}</div>
+            <div class="producto-precio">$${producto.precio}</div>
+
+            ${estadoJuego.mensaje ? `<div class="mensaje ${tipoMensaje}">${estadoJuego.mensaje}</div>` : ''}
+
+            <div class="dinero-seleccionado">
+              <p>Dinero que diste:</p>
+              <div class="cantidad-total">$${estadoJuego.dineroSeleccionado}</div>
+            </div>
+
+            <div class="productos-lista">
+              <p><strong>Selecciona monedas para pagar:</strong></p>
+              <p style="font-size: 14px; color: #666;">Dinero disponible: $1, $2, $5, $10, $20</p>
+            </div>
+
+            <div class="monedas-container">
+              ${MONEDAS.map(valor => `
+                <button class="moneda-btn" onclick="tiendita_agregarMoneda(${valor})">
+                  <span>$${valor}</span>
+                  <span class="moneda-valor">peso${valor > 1 ? 's' : ''}</span>
+                </button>
+              `).join('')}
+            </div>
+
+            <div class="botones-accion">
+              <button class="btn-pagar" onclick="tiendita_verificarPago()">💳 Pagar</button>
+              <button class="btn-limpiar" onclick="tiendita_limpiarDinero()">🗑️ Limpiar</button>
+            </div>
+          </div>
+        `;
+
+        container.innerHTML = html;
+      }
+
+      // 🔗 FUNCIONES GLOBALES (para onclick)
+      window.tiendita_agregarMoneda = agregarMoneda;
+      window.tiendita_verificarPago = verificarPago;
+      window.tiendita_limpiarDinero = limpiarDinero;
+
+      window.tiendita_volverAlMenu = function() {
+        const contenedor = document.getElementById('tiendita-escolar-juego');
+        if (contenedor) contenedor.innerHTML = '';
+      };
+
+      // 🚀 INICIAR EL JUEGO
+      iniciarJuego();
+    </script>
+  </div>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0709244ff395c1f',t:'MTc4MDY3NzEyNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
